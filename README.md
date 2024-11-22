@@ -1,11 +1,8 @@
-### Пример файла `README.md`
-
-```markdown
 # Currency Exchange API
 
 ## Описание проекта
 
-Currency Exchange API — это сервис, который позволяет пользователям получать доступ к данным об обменных курсах валют в режиме реального времени и выполнять конвертацию валют. Проект разработан с использованием **FastAPI** и обеспечивает защиту данных с помощью **JWT-аутентификации**. Данные об обменных курсах запрашиваются из внешнего API, а информация о пользователях хранится в **MongoDB**.
+Currency Exchange API — это сервис, который позволяет пользователям получать доступ к данным об обменных курсах валют в режиме реального времени и выполнять конвертацию валют. Проект разработан с использованием **FastAPI**, используя принципы **REST API** и обеспечивает защиту данных с помощью **JWT-аутентификации**. Данные об обменных курсах запрашиваются из внешнего API, а информация о пользователях хранится в **MongoDB**.
 
 ---
 
@@ -14,7 +11,7 @@ Currency Exchange API — это сервис, который позволяет
 - Получение списка поддерживаемых валют и их кодов.
 - Конвертация валют на основе актуальных курсов.
 - Защищённый доступ к данным с использованием JWT-аутентификации.
-- Работа с MongoDB для хранения пользовательских данных и истории операций.
+- Работа с MongoDB для хранения пользовательских данных.
 - Интеграция с внешним API для получения свежих обменных курсов.
 
 ---
@@ -22,10 +19,11 @@ Currency Exchange API — это сервис, который позволяет
 ## Технологии
 
 - **Backend**: FastAPI
+- **API Type**: REST API
 - **Authentication**: JWT
 - **Database**: MongoDB
 - **External API**: Используется для получения данных об обменных курсах
-- **Environment Variables**: Python-dotenv
+- **Environment Variables**: Pydantic settings
 
 ---
 
@@ -34,8 +32,8 @@ Currency Exchange API — это сервис, который позволяет
 ### 1. Клонирование репозитория
 
 ```bash
-git clone https://github.com/username/currency-exchange-api.git
-cd currency-exchange-api
+git clone https://github.com/username/currency_exchange.git
+cd currency_exchange
 ```
 
 ### 2. Установка зависимостей
@@ -43,7 +41,7 @@ cd currency-exchange-api
 Создайте и активируйте виртуальное окружение, затем установите зависимости:
 
 ```bash
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate  # Для Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
@@ -52,8 +50,10 @@ pip install -r requirements.txt
 
 Создайте файл `.env` и укажите переменные:
 ```
-MONGODB_URI=mongodb://localhost:27017
-EXCHANGE_API_URL=https://api.example.com/latest
+DB_HOST=localhost
+DB_PORT=27017
+DB_NAME=your_db_name
+EXCHANGE_API_URL=https://v6.exchangerate-api.com/v6/{your_api_key}/latest/
 EXCHANGE_API_KEY=your_api_key
 SECRET_KEY=your_secret_key
 ACCESS_TOKEN_EXPIRE_MINUTES=30
@@ -81,7 +81,7 @@ uvicorn app.main:app --reload
 **Пример ответа**:
 ```json
 {
-    "currencies": {
+    "conversion_rates": {
         "USD": "United States Dollar",
         "EUR": "Euro",
         "GBP": "British Pound Sterling",
@@ -118,18 +118,21 @@ uvicorn app.main:app --reload
 ## Структура проекта
 
 ```
-currency-exchange-api/
+currency_exchange/
 │
-├── app/
-│   ├── main.py                # Точка входа в приложение
-│   ├── models/                # Pydantic модели
-│   ├── routes/                # Маршруты приложения
-│   ├── services/              # Взаимодействие с внешними API
-│   └── utils/                 # Утилиты (валидация, хэши, JWT)
+├── src/
+│   ├── api/                   
+│   │    ├── endpoints/        # Маршруты приложения
+│   │    ├── models/           # Pydantic модели
+│   ├── core/                  # Утилиты (валидация, хэши, JWT)
+│   ├── db/                    # Взаимодействие с БД
+│   └── utils/                 # Взаимодействие с внешними API
 │
 ├── tests/                     # Тесты приложения
 ├── requirements.txt           # Зависимости
 ├── .env                       # Переменные окружения
+├── main.py                    # Точка входа в приложение
+├── pyproject.toml             # 
 └── README.md                  # Документация
 ```
 
@@ -154,9 +157,9 @@ pytest
 
 ## Контакты
 
-Автор: Ксения 
+Автор: Ксения Маслова
 Email: ksyusha-kryukova@bk.ru 
-GitHub: 
+GitHub: github.com/Ksenia-Kryukova
 
 ---
 ```# currency_exchange

@@ -22,11 +22,11 @@ async def get_exchange_rates(
     '''
     Защищённая конечная точка для получения обменных курсов.
     '''
-    exchange_data = fetch_exchange_rates(base_currency)
+    exchange_data = await fetch_exchange_rates(base_currency)
     return {
         "base_currency": base_currency,
-        "rates": exchange_data.get("rates", {}),
-        "date": exchange_data.get("date", "unknown")
+        "rates": exchange_data.get("conversion_rates", {}),
+        "last_update": exchange_data.get("time_last_update_utc", "unknown")
     }
 
 
@@ -38,13 +38,12 @@ async def convert_currency(
     '''
     Защищённая конечная точка для конвертации валют.
     '''
-    exchange_data = fetch_exchange_rates(currency.from_currency)
-    available_codes = exchange_data.get("rates", {}).keys()
+    exchange_data = await fetch_exchange_rates(currency.from_currency)
 
-    validate_currency_code(currency.from_currency, available_codes)
-    validate_currency_code(currency.to_currency, available_codes)
+    await validate_currency_code(currency.from_currency)
+    await validate_currency_code(currency.to_currency)
 
-    rate = exchange_data["rates"].get(currency.to_currency)
+    rate = exchange_data["conversion_rates"].get(currency.to_currency)
     if not rate:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -65,6 +64,7 @@ async def get_currency_list(
     base_currency: str = "USD"
 ):
     '''
-    Защищенная конечная точка для отображения списка поддерживаемых валют и их кодов.
+    Защищенная конечная точка для отображения
+    списка поддерживаемых валют и их кодов.
     '''
-    return currency_list(base_currency)
+    return await currency_list(base_currency)
